@@ -6,7 +6,7 @@
 
 
 
-plain = "looooking 7 goooood aaaa keeeept"
+plain = "loooooooooooooooooooooking 7 goooood aaaa keeeept"
 enc = []
 
 reps = 1 # every letter has one repitition of itself
