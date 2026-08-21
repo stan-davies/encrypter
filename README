@@ -1,0 +1,14 @@
+Simple text encoder so that you get smaller file sizes.
+
+Done a basic run length encoding, which isn't really useful for text, but has
+reminded me how to use python.
+
+Now want to do a dictionary based thing.
+
+So scan the text and create a dictionary where each word is a key and has a
+count as its data. Then cull anything with less than maybe two or three
+repititions. Then create a new dictionary where the words become the data, and
+there is some other key. Somehow smack this in the file with the text full of
+keys. Scrap all the RLE stuff for this too I think.
+
+Then work out how to decode it all.
