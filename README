@@ -12,3 +12,10 @@ there is some other key. Somehow smack this in the file with the text full of
 keys. Scrap all the RLE stuff for this too I think.
 
 Then work out how to decode it all.
+
+
+
+
+Currently only works with lowercase, and also we can't have character 30 as a
+key because that is the escape key. Also want some way of getting just the
+right number of substitutions.

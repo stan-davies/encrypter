@@ -3,7 +3,7 @@
 import re
 import util
 
-with open("plaintext", "r") as f:
+with open("big_sample", "r") as f:
         plain  = f.read()
 
 plain += '\0'
@@ -18,11 +18,12 @@ for s in symbols:
                 reps[s] = 1
 
 # Might want to work out optimum rather than just picking a value.
-filtered = [key for key in reps if reps[key] > 1]
+filtered = [key for key in reps if reps[key] > 5 and len(key) > 2]
 
 
 with open("enc.bin", "wb") as f:
         for i in range(0, len(filtered)):
-                plain = re.sub(f'{filtered[i]}', f'{chr(30)}{i}', plain)
-                f.writelines([ord(c).to_bytes(1) for c in f'{i}{filtered[i]}\n'])
+                plain = re.sub(f'{filtered[i]}', f'\x1e{chr(i)}', plain)
+                f.writelines([ord(c).to_bytes(1) for c in f'{chr(i)}{filtered[i]}\n'])
+        f.write(b'\x1e\x1e')
         f.writelines([ord(c).to_bytes(1) for c in plain])

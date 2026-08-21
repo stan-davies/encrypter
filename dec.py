@@ -1,33 +1,22 @@
 import util
+import re
 
 with open("enc.bin", "rb") as f:
-        enc = f.read()
+        [dictionary, enc] = (''.join([chr(b) for b in f.read()])).split('\x1e\x1e')
 
-plain = ""
+subs = re.findall(r'.(\w+)\n', dictionary)
+
+plain = ''
 esc = False
-reps = 1
-beg = 0
 
-for i in range(0, len(enc)):
-        if util.ESCn == enc[i]:
-                if esc:
-                        reps = int.from_bytes(enc[beg + 1:i])
-                else:
-                        beg = i
-                esc = not esc
-                continue
-
-        if esc:
-                continue
-
-        if reps > 1:
-                plain += chr(enc[i]) * reps
-                reps = 1
+for c in enc:
+        if '\x1e' == c:
+                esc = True
+        elif esc:
+                plain += subs[ord(c)]
+                esc = False
         else:
-                plain += chr(enc[i])
+                plain += c
 
-if esc:
-        print("Unclosed escape sequence. You know how I feel about that sort of thing =(")
-
-
-print(f"{plain}")
+with open('dec', 'w') as f:
+        f.write(plain)
