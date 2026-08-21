@@ -1,3 +1,5 @@
+import util
+
 with open("enc.bin", "rb") as f:
         enc = f.read()
 
@@ -7,12 +9,9 @@ reps = 1
 beg = 0
 
 for i in range(0, len(enc)):
-        if 30 == enc[i]:
+        if util.ESC == enc[i]:
                 if esc:
-# Not really needed at all because reps is stored as an actual number so takes
-# up a single byte but you can never be too careful.
-                        slc = "".join([f"{s}" for s in enc[beg + 1:i]])
-                        reps = int(slc) # What if fails??
+                        reps = int.from_bytes(enc[beg + 1:i])
                 else:
                         beg = i
                 esc = not esc
