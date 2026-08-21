@@ -8,8 +8,9 @@ import util
 # normally does.
 
 
+with open("plaintext", "r") as f:
+        plain  = f.read()
 
-plain = "well then loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooking 7 goooood aaaa keeeept"
 pln_bt = [ord(c).to_bytes(1) for c in plain]
 enc_bt = []
 
@@ -23,7 +24,7 @@ for c in pln_bt:
 # Convert to '0xXX', minus 1 to give number of columns plus one, then divide,
 # so 1,2 columns goes to 1 byte, 2,3 columns to 2B, 4,5 columns to 3B, ...
                 width = (len(f"{hex(reps)}") - 1) // 2
-                enc_bt.extend([util.ESC, reps.to_bytes(width), util.ESC, prec])
+                enc_bt.extend([util.ESCb, reps.to_bytes(width), util.ESCb, prec])
                 reps = 1
         else:
                 reps = 1

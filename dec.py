@@ -9,7 +9,7 @@ reps = 1
 beg = 0
 
 for i in range(0, len(enc)):
-        if util.ESC == enc[i]:
+        if util.ESCn == enc[i]:
                 if esc:
                         reps = int.from_bytes(enc[beg + 1:i])
                 else:
@@ -30,4 +30,4 @@ if esc:
         print("Unclosed escape sequence. You know how I feel about that sort of thing =(")
 
 
-print(f"got '{plain}'")
+print(f"{plain}")

@@ -1,1 +1,2 @@
-ESC = bytes(b'0x1e')
+ESCn = 30
+ESCb = (ESCn).to_bytes(1)
