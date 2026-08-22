@@ -2,9 +2,9 @@ import util
 import re
 
 with open("enc.bin", "rb") as f:
-        [dictionary, enc] = (''.join([chr(b) for b in f.read()])).split('\x1e\x1e')
+        [dictionary, enc] = (''.join([chr(b) for b in f.read()])).split('\x1e\x1e\x1e')
 
-subs = re.findall(r'.(\w+)\n', dictionary)
+subs = re.findall(r'(\w+)\n', dictionary)
 
 plain = ''
 esc = False

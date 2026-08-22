@@ -1,21 +1,117 @@
 Simple text encoder so that you get smaller file sizes.
 
-Done a basic run length encoding, which isn't really useful for text, but has
-reminded me how to use python.
-
-Now want to do a dictionary based thing.
-
-So scan the text and create a dictionary where each word is a key and has a
-count as its data. Then cull anything with less than maybe two or three
-repititions. Then create a new dictionary where the words become the data, and
-there is some other key. Somehow smack this in the file with the text full of
-keys. Scrap all the RLE stuff for this too I think.
-
-Then work out how to decode it all.
-
-
 
 
 Currently only works with lowercase, and also we can't have character 30 as a
 key because that is the escape key. Also want some way of getting just the
 right number of substitutions.
+
+For capitalisation, some words are likely to be capitalised by default, such as
+names, whereas others will have variation. So the idea should probably be to
+alter the escape character based on whether the word needs to be capitalised.
+But then is there really any point bothering?
+
+Trying the same program but with a text containing capitalised words just
+ignored the capital letters and took symbols of the rest of words, which is
+kind of a neat system, but not at all ideal.
+
+
+
+Removed the keys in the dictionary, because the keys are just numbers, but the
+words are put in order anyway, so you don't really need them.
+
+
+
+----
+
+
+In order to get savings in terms of byte usage, consider the following:
+
+Suppose there is a three letter word in the dictionary, such as 'the'.
+
+In encoded form, the dictionary includes 'and\n', so four bytes, and every
+instance of the word looks like '^i' where '^' is the escape code (literally
+00011110) and 'i' is whatever the key is for this word, let us suppose it is
+the first word in the dictionary, so then the key is literally 00000001.
+
+So, given the file
+
+''' plaintext   - 11 text bytes
+the the the
+'''
+
+The encoded version is
+
+''' enc.bin     - 12 text bytes
+the\n
+^i ^i ^i
+'''
+
+Indeed, were we to have fewer than three instances of the word, the byte count
+would be an expense, not a saving. However:
+
+''' plaintext   - 15 text bytes
+the the the the
+'''
+
+''' enc.bin     - 15 text bytes
+the\n
+^i ^i ^i ^i
+'''
+
+So then the practice of encoding is really neither here nor there, though does
+give us more processing to do later, so might as well not be done. It is clear,
+however, that if we add a fifth instance of 'the', then our two files will
+contain nineteen and eighteen bytes respectively, and so the savings begin (a
+whole byte!).
+
+Note that the precise quantity differs for words of different lenghts:
+
+Given the word 'that':
+
+''' plaintext   - 14 text bytes
+that that that
+'''
+
+''' enc.bin     - 13 text bytes
+that\n
+^i ^i ^i
+'''
+
+Given the word 'where':
+
+''' plaintext   - 17 text bytes
+where where where
+'''
+
+''' enc.bin     - 14 text bytes
+where\n
+^i ^i ^i
+
+And so on. Regard the following table:
+
+Word length | Min. instances for saving | Saving at min.
+------------|---------------------------|---------------
+1           | n/a                       | n/a
+2           | n/a                       | n/a
+3           | 5                         | 1
+4           | 3                         | 1
+5           | "                         | 3
+6           | 2                         | 1
+7           | "                         | 2
+8           | "                         | 3
+9           | "                         | 4
+
+Note that these calculations do not include the '^^^' control code that
+separates the dictionary from the body text, as this is only ever included
+once, and it is suspected that the dictionary will always have multiple words
+in it (if not, probably don't bother with the whole bloody scheme).
+
+For words of length one and two, they are never larger than the instances of
+'^i', and so no multiple of them will ever create savings with my
+implementation.
+
+Note also that for no word will the minimum instances be one, or less, as the
+word is always copied out in full in the dictionary, so there will always be
+more extra characters than a single instance. This table also shows that
+improving my implementation to pick up multi-word symbols would be worthwhile.
